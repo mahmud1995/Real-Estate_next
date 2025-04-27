@@ -9,7 +9,6 @@ import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { sweetErrorAlert } from '../libs/sweetAlert';
 import { socketVar } from './store';
 
-
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 function getHeaders() {
@@ -40,15 +39,15 @@ class LoggingWebSocket {
 		socketVar(this.socket);
 
 		this.socket.onopen = () => {
-			console.log("Websocket connection!");
-		}; 
+			console.log('Websocket connection!');
+		};
 
 		this.socket.onmessage = (msg) => {
-			console.log("Websocket message:", msg.data);
+			console.log('Websocket message:', msg.data);
 		};
 
 		this.socket.onerror = (error) => {
-			console.log("WebSocket error:", error);
+			console.log('WebSocket error:', error);
 		};
 	}
 	send(data: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
@@ -96,7 +95,7 @@ function createIsomorphicLink() {
 					console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
 					if (!message.includes('input')) sweetErrorAlert(message);
 				});
-			} 
+			}
 			if (networkError) console.log(`[Network error]: ${networkError}`);
 			// @ts-ignore
 			if (networkError?.statusCode === 401) {
