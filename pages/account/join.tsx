@@ -215,3 +215,21 @@ const Join: NextPage = () => {
 };
 
 export default withLayoutBasic(Join);
+
+/*
+public async getProperty(memberId: ObjectId, propertyId: ObjectId): Promise<Property> {
+	const search: T = {
+		_id: propertyId,
+		propertyStatus: PropertyStatus.ACTIVE,
+	};
+
+	const targetProperty: Property = await this.propertyModel.findOne(search).lean<Property>().exec();
+	if(!targerProperty) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+	if(memberId) {
+		const viewInput = { memberId: memberId, viewRefId: propertyId}
+	}
+}
+
+
+*/
