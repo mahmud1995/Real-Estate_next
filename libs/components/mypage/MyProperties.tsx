@@ -30,9 +30,10 @@ const MyProperties: NextPage = ({ initialInput, ...props }: any) => {
 		error: getAgentPropertiesError,
 		refetch: getAgentPropertiesRefetch,
 	} = useQuery(GET_AGENT_PROPERTIES, {
-		fetchPolicy: 'network-only',
+		fetchPolicy: 'network-only', // faqat serverdan oladi
 		variables: {
 			input: searchFilter,
+			/* by default sends searchFilter as input to the query. birinchi requestni automatic yuboramiz*/
 		},
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
@@ -121,7 +122,9 @@ const MyProperties: NextPage = ({ initialInput, ...props }: any) => {
 							<Typography className="title-text">Date Published</Typography>
 							<Typography className="title-text">Status</Typography>
 							<Typography className="title-text">View</Typography>
-							{searchFilter.search.propertyStatus === 'ACTIVE' && (<Typography className="title-text">Action</Typography>)}
+							{searchFilter.search.propertyStatus === 'ACTIVE' && (
+								<Typography className="title-text">Action</Typography>
+							)}
 						</Stack>
 
 						{agentProperties?.length === 0 ? (

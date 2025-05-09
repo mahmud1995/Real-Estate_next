@@ -4,21 +4,55 @@ import { Stack, Box, Link, Grid, Card, CardMedia, CardContent, Typography } from
 import { PropertiesInquiry } from '../../types/property/property.input';
 import { PropertyLocation } from '../../enums/property.enum';
 import { useRouter } from 'next/router';
+import { useQuery } from '@apollo/client';
+import { GET_PROPERTIES } from '../../../apollo/user/query';
+import { T } from '../../types/common';
 
 interface CityFilterProps {
 	initialInput: PropertiesInquiry;
+}
+
+interface CityTotal {
+	location: PropertyLocation;
+	total: number;
 }
 
 const PropertiesByCities = (props: CityFilterProps) => {
 	const { initialInput } = props;
 	const locationRef: any = useRef();
 	const [searchFilter, setSearchFilter] = useState<PropertiesInquiry>(initialInput);
+	const [cityTotals, setCityTotals] = useState<CityTotal[]>([]); // Store per-city totals
 	const router = useRouter();
 	const [propertyLocation, setPropertyLocation] = useState<PropertyLocation[]>(Object.values(PropertyLocation));
+
 	/** APOLLO REQUESTS **/
+	const {
+		loading: getPropertiesLoading,
+		data: getPropertiesData,
+		error: getPropertiesError,
+		refetch: getPropertiesRefetch,
+	} = useQuery(GET_PROPERTIES, {
+		fetchPolicy: 'network-only',
+		variables: {
+			input: searchFilter,
+		},
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			if (data?.getProperties) {
+				// Assuming getProperties returns a list with location counts
+				const totals = Object.values(PropertyLocation).map((location) => ({
+					location,
+					total: data.getProperties.list.filter((property: any) => property.propertyLocation === location).length,
+				}));
+				setCityTotals(totals);
+			}
+		},
+		onError: (error) => {
+			console.error('Error fetching properties:', error);
+		},
+	});
 
 	/** HANDLERS **/
-
 	console.log('searchFilter', searchFilter);
 
 	const handleCardClick = useCallback(
@@ -40,12 +74,8 @@ const PropertiesByCities = (props: CityFilterProps) => {
 		},
 		[searchFilter, router],
 	);
-	console.log('searchFilter', searchFilter);
 
-	// const routeNavi = () => {
-	// 	if (searchFilter?.search?.locationList)
-	// 		router.push(`/property?input=${JSON.stringify(searchFilter)}`);
-	// };
+	console.log('searchFilter', searchFilter);
 
 	const device = useDeviceDetect();
 	if (device === 'mobile') {
@@ -69,25 +99,28 @@ const PropertiesByCities = (props: CityFilterProps) => {
 						</Box>
 					</Stack>
 					<Grid container spacing={2}>
-						{propertyLocation.map((location: PropertyLocation, idx: any) => (
-							<Grid item xs={6} sm={4} md={3} key={idx}>
-								<Card className={'card'} onClick={() => handleCardClick(location)}>
-									<CardMedia
-										component="img"
-										height="140"
-										image={`img/banner/cities/${location.toLowerCase()}.webp`}
-										alt={location}
-										className={'image'}
-									/>
-									<CardContent className={'cardContent'}>
-										<Typography variant="subtitle1" fontWeight="bold">
-											{location}
-										</Typography>
-										<Typography variant="body2">{0} properties</Typography>
-									</CardContent>
-								</Card>
-							</Grid>
-						))}
+						{propertyLocation.map((location: PropertyLocation, idx: any) => {
+							const cityTotal = cityTotals.find((ct) => ct.location === location)?.total || 0;
+							return (
+								<Grid item xs={6} sm={4} md={3} key={idx}>
+									<Card className={'card'} onClick={() => handleCardClick(location)}>
+										<CardMedia
+											component="img"
+											height="140"
+											image={`img/banner/cities/${location.toLowerCase()}.webp`}
+											alt={location}
+											className={'image'}
+										/>
+										<CardContent className={'cardContent'}>
+											<Typography variant="subtitle1" fontWeight="bold">
+												{location}
+											</Typography>
+											<Typography variant="body2">{cityTotal} properties</Typography>
+										</CardContent>
+									</Card>
+								</Grid>
+							);
+						})}
 					</Grid>
 				</Stack>
 			</Stack>
