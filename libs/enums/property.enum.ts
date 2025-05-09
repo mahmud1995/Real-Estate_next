@@ -19,5 +19,5 @@ export enum PropertyLocation {
 	GWANGJU = 'GWANGJU',
 	CHONJU = 'CHONJU',
 	DAEJON = 'DAEJON',
-	JEJU = 'JEJU',
+	// JEJU = 'JEJU',
 }

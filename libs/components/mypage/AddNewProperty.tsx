@@ -32,7 +32,7 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 		data: getPropertyData,
 		error: getPropertiesError,
 		refetch: getPropertyRefetch,
-	} = useQuery (GET_PROPERTY, {
+	} = useQuery(GET_PROPERTY, {
 		fetchPolicy: 'network-only',
 		variables: {
 			input: router.query.propertyId,
@@ -74,7 +74,7 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 						imagesUploader(files: $files, target: $target)
 				  }`,
 					variables: {
-						files: [null, null, null, null, null,null,null],
+						files: [null, null, null, null, null, null, null],
 						target: 'property',
 					},
 				}),
@@ -134,12 +134,12 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 	// InsertPropertyHandler
 	const insertPropertyHandler = useCallback(async () => {
 		try {
-			const result = await createProperty ({
+			const result = await createProperty({
 				variables: {
 					input: insertPropertyData,
 				},
 			});
-			await sweetMixinSuccessAlert("This Property has been created successfully!");
+			await sweetMixinSuccessAlert('This Property has been created successfully!');
 			await router.push({
 				pathname: '/mypage', // MyPage ga yunaltirish
 				query: {
@@ -155,12 +155,12 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 		try {
 			//@ts-ignore
 			insertPropertyData._id = getPropertyData?.getProperty?._id;
-			const result = await updateProperty ({
+			const result = await updateProperty({
 				variables: {
 					input: insertPropertyData,
 				},
 			});
-			await sweetMixinSuccessAlert("This Property has been updated successfully!");
+			await sweetMixinSuccessAlert('This Property has been updated successfully!');
 			await router.push({
 				pathname: '/mypage',
 				query: {
@@ -466,7 +466,7 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 										hidden={true}
 										onChange={uploadImages}
 										multiple={true}
-										accept="image/jpg, image/jpeg, image/png"
+										accept="image/jpg, image/jpeg, image/png, image/webp"
 									/>
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
 										<g clipPath="url(#clip0_7309_3249)">

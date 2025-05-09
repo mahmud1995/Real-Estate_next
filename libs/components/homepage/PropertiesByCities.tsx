@@ -1,18 +1,52 @@
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Stack, Box, Link, Grid, Card, CardMedia, CardContent, Typography } from '@mui/material';
+import { PropertiesInquiry } from '../../types/property/property.input';
+import { PropertyLocation } from '../../enums/property.enum';
+import { useRouter } from 'next/router';
 
-const cities = [
-	{ name: 'Seoul', image: '/img/cities/seoul.jpg', count: 12 },
-	{ name: 'Busan', image: '/img/cities/busan.jpg', count: 12 },
-	{ name: 'Daegu', image: '/img/cities/daegu_1.webp', count: 12 },
-	{ name: 'Daejon', image: '/img/cities/daejon.webp', count: 12 },
-	{ name: 'Incheon', image: '/img/cities/incheon.jpg', count: 12 },
-	{ name: 'Gyeongju ', image: '/img/cities/gyeongju.jpg', count: 12 },
-	{ name: 'Gwangju', image: '/img/cities/gwangju.jpg', count: 12 },
-	{ name: 'Cheonju', image: '/img/cities/cheongju.webp', count: 12 },
-];
-const PropertiesByCities = () => {
+interface CityFilterProps {
+	initialInput: PropertiesInquiry;
+}
+
+const PropertiesByCities = (props: CityFilterProps) => {
+	const { initialInput } = props;
+	const locationRef: any = useRef();
+	const [searchFilter, setSearchFilter] = useState<PropertiesInquiry>(initialInput);
+	const router = useRouter();
+	const [propertyLocation, setPropertyLocation] = useState<PropertyLocation[]>(Object.values(PropertyLocation));
+	/** APOLLO REQUESTS **/
+
+	/** HANDLERS **/
+
+	console.log('searchFilter', searchFilter);
+
+	const handleCardClick = useCallback(
+		(location: PropertyLocation) => {
+			const updatedSearchFilter = {
+				...searchFilter,
+				search: {
+					...searchFilter.search,
+					locationList: [location],
+				},
+			};
+			setSearchFilter(updatedSearchFilter);
+			if (updatedSearchFilter?.search?.locationList) {
+				router.push({
+					pathname: '/property',
+					query: { input: JSON.stringify(updatedSearchFilter) },
+				});
+			}
+		},
+		[searchFilter, router],
+	);
+	console.log('searchFilter', searchFilter);
+
+	// const routeNavi = () => {
+	// 	if (searchFilter?.search?.locationList)
+	// 		router.push(`/property?input=${JSON.stringify(searchFilter)}`);
+	// };
+
 	const device = useDeviceDetect();
 	if (device === 'mobile') {
 		return <span>Properties By Cities</span>;
@@ -35,15 +69,21 @@ const PropertiesByCities = () => {
 						</Box>
 					</Stack>
 					<Grid container spacing={2}>
-						{cities.map((city, idx) => (
+						{propertyLocation.map((location: PropertyLocation, idx: any) => (
 							<Grid item xs={6} sm={4} md={3} key={idx}>
-								<Card className={'card'}>
-									<CardMedia component="img" height="140" image={city.image} alt={city.name} className={'image'} />
+								<Card className={'card'} onClick={() => handleCardClick(location)}>
+									<CardMedia
+										component="img"
+										height="140"
+										image={`img/banner/cities/${location.toLowerCase()}.webp`}
+										alt={location}
+										className={'image'}
+									/>
 									<CardContent className={'cardContent'}>
 										<Typography variant="subtitle1" fontWeight="bold">
-											{city.name}
+											{location}
 										</Typography>
-										<Typography variant="body2">{city.count} property</Typography>
+										<Typography variant="body2">{0} properties</Typography>
 									</CardContent>
 								</Card>
 							</Grid>
@@ -53,6 +93,18 @@ const PropertiesByCities = () => {
 			</Stack>
 		);
 	}
+};
+
+PropertiesByCities.defaultProps = {
+	initialInput: {
+		page: 1,
+		limit: 10,
+		search: {
+			squaresRange: { start: 0, end: 500 },
+			pricesRange: { start: 0, end: 2000000 },
+			locationList: [], // Initialize with empty locationList
+		},
+	},
 };
 
 export default PropertiesByCities;
