@@ -98,11 +98,11 @@ const PropertiesByCities = (props: CityFilterProps) => {
 							</div>
 						</Box>
 					</Stack>
-					<Grid container spacing={2}>
+					<Grid container spacing={3}>
 						{propertyLocation.map((location: PropertyLocation, idx: any) => {
 							const cityTotal = cityTotals.find((ct) => ct.location === location)?.total || 0;
 							return (
-								<Grid item xs={6} sm={4} md={3} key={idx}>
+								<Grid item xs={6} sm={4} md={2} key={idx}>
 									<Card className={'card'} onClick={() => handleCardClick(location)}>
 										<CardMedia
 											component="img"
