@@ -69,27 +69,29 @@ const PropertiesByCities = (props: FilterProps) => {
 							</div>
 						</Box>
 					</Stack>
-					<Grid container spacing={8}>
-						{propertyLocation.map((location, idx) => (
-							<Grid item xs={6} sm={4} md={3} key={idx}>
-								<Card className={'card'} onClick={() => handleCardClick(location)}>
-									<CardMedia
-										component="img"
-										height="140"
-										image={`/img/banner/cities/${location.toLocaleLowerCase()}.webp`}
-										alt={location}
-										className={'image'}
-									/>
-									<CardContent className={'cardContent'}>
-										<Typography variant="subtitle1" fontWeight="bold">
-											{location}
-										</Typography>
-										<Typography variant="body2">{0} property</Typography>
-									</CardContent>
-								</Card>
-							</Grid>
-						))}
-					</Grid>
+					<Link href={'/property'}>
+						<Grid container spacing={4}>
+							{propertyLocation.map((location, idx) => (
+								<Grid item xs={6} sm={4} md={3} key={idx}>
+									<Card className={'card'} onClick={() => handleCardClick(location)}>
+										<CardMedia
+											component="img"
+											height="140"
+											image={`/img/banner/cities/${location.toLocaleLowerCase()}.webp`}
+											alt={location}
+											className={'image'}
+										/>
+										<CardContent className={'cardContent'}>
+											<Typography variant="subtitle1" fontWeight="bold">
+												{location}
+											</Typography>
+											<Typography variant="body2">{0} property</Typography>
+										</CardContent>
+									</Card>
+								</Grid>
+							))}
+						</Grid>
+					</Link>
 				</Stack>
 			</Stack>
 		);

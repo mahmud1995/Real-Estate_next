@@ -98,7 +98,7 @@ const PropertiesByCities = (props: CityFilterProps) => {
 							</div>
 						</Box>
 					</Stack>
-					<Grid container spacing={3}>
+					<Grid container rowSpacing={0.1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
 						{propertyLocation.map((location: PropertyLocation, idx: any) => {
 							const cityTotal = cityTotals.find((ct) => ct.location === location)?.total || 0;
 							return (
